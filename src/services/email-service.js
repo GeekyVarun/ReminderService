@@ -1,53 +1,45 @@
-const sender = require('../config/emailConfig');
-const TicketRepository = require('../repository/ticket-repository');    
+const {TicketRepository} = require('../repositories');
+const { MAILER } = require('../config');
 
-const repo = new TicketRepository();
+const ticketRepo = new TicketRepository();
 
-const sendBasicEmail = async (mailFrom, mailTo, mailSubject, mailBody) => {
+async function sendEmail(mailFrom, mailTo, subject, text) {
     try {
-        const response = await sender.sendMail({
+        const response = await MAILER.sendMail({
             from: mailFrom,
             to: mailTo,
-            subject: mailSubject,
-            text: mailBody
+            subject: subject,
+            text: text
         });
-        console.log(response);
-    } catch (error) {
+        return response;
+    } catch(error) {
         console.log(error);
+        throw error;
     }
 }
 
-const fetchPendingEmails = async (timestamp) => {
+async function createTicket(data) {
     try {
-        const response = await repo.get({status: "PENDING"});
+        const response = await ticketRepo.create(data);
         return response;
-    } catch (error) {
+    } catch(error) {
         console.log(error);
+        throw error;
     }
 }
 
-const updateTicket = async (ticketId, data) => {
+async function getPendingEmails() {
     try {
-        const response = await repo.update(ticketId, data);
+        const response = await ticketRepo.getPendingTickets();
         return response;
-    } catch (error) {
+    } catch(error) {
         console.log(error);
-    }
-}
-
-const createNotification = async (data) => {
-    try {
-        //console.log(data);
-        const response = await repo.create(data);
-        return response;
-    } catch (error) {
-        console.log(error);
+        throw error;
     }
 }
 
 module.exports = {
-    sendBasicEmail,
-    fetchPendingEmails,
-    createNotification,
-    updateTicket
+    sendEmail,
+    createTicket,
+    getPendingEmails
 }

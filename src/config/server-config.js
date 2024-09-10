@@ -4,6 +4,6 @@ dotenv.config();
 
 module.exports = {
     PORT: process.env.PORT,
-    EMAIL_ID: process.env.EMAIL_ID,
-    EMAIL_PASS: process.env.EMAIL_PASS
-};
+    GMAIL_PASS: process.env.GMAIL_PASS,
+    GMAIL_EMAIL: process.env.GMAIL_EMAIL
+}
